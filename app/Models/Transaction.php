@@ -8,4 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Transaction extends Model
 {
     use HasFactory;
+    protected $fillable = ['member_id'];
+
+    public function transactionDetails(){
+        return $this->hasMany('App\Models\TransactionDetail', 'transaction_id');
+    }
+
+    public function member(){
+        return $this->belongsTo('App\Models\Member', 'member_id');
+    }
 }

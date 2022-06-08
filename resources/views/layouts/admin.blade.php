@@ -186,6 +186,14 @@
                   </a>
               </li>
               <li class="nav-item">
+                <a href="{{ url('categories') }}" class="nav-link {{request()->is('categories') ? 'active' : ''}}">
+                    <i class="nav-icon fas fa-box"></i>
+                    <p>
+                      Category
+                    </p>                    
+                </a>
+            </li>
+              <li class="nav-item">
                   <a href="{{ url('details') }}" class="nav-link {{request()->is('details') ? 'active' : ''}}">
                       <i class="nav-icon fas fa-archive"></i>
                       <p>
@@ -208,12 +216,6 @@
         <div class="row mb-2">
           <div class="col-sm-6">
             <h1 class="m-0">@yield('header')</h1>
-          </div><!-- /.col -->
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="{{ url('home')}}">Home</a></li>
-              <li class="breadcrumb-item active">Dashboard v1</li>
-            </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
       </div><!-- /.container-fluid -->
@@ -238,6 +240,7 @@
 </div>
 <!-- ./wrapper -->
 
+{{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
 <!-- jQuery -->
 <script src="{{asset('assets/plugins/jquery/jquery.min.js')}}"></script>
 <!-- jQuery UI 1.11.4 -->

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Category;
+use App\Models\Supplier;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -14,7 +16,24 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+        $categories = Category::all();
+        $suppliers = Supplier::all();
+        return view('admin.product.index', compact("suppliers", "categories"));
+    }
+
+    public function api()
+    {
+        $products = Product::with("category", "supplier");
+        $datatables = datatables()->of($products)
+                                ->addColumn('supplier', function($product){
+                                    return $product->supplier->name;
+                                })
+                                ->addColumn('category', function($product){
+                                    return $product->category->name;
+                                })
+                                ->addIndexColumn();
+
+        return $datatables->make(true);
     }
 
     /**
@@ -35,7 +54,21 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        {
+            $this->validate($request,[
+                'name' => ['required'],
+                'merk' => ['required'],
+                'sell_price' => ['required'],
+                'buy_price' => ['required'],
+                'stock' => ['required'],
+                'category_id' => ['required'],
+                'supplier_id' => ['required']
+            ]);
+    
+            Product::create($request->all());
+    
+            return redirect('products');
+        }
     }
 
     /**
@@ -69,7 +102,19 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        //
+        $this->validate($request,[
+            'name' => ['required'],
+            'merk' => ['required'],
+            'sell_price' => ['required'],
+            'buy_price' => ['required'],
+            'stock' => ['required'],
+            'category_id' => ['required'],
+            'supplier_id' => ['required']
+        ]);
+
+        $product->update($request->all());
+
+        return redirect('products');
     }
 
     /**
@@ -80,6 +125,6 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        //
+        $product->delete();
     }
 }

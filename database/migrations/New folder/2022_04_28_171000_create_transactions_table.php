@@ -15,11 +15,14 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('product_id');
             $table->unsignedBigInteger('member_id');
+            $table->unsignedBigInteger('supplier_id');
             $table->timestamps();
 
-
-            $table->foreign('member_id')->references('id')->on('members');
+            $table->foreign('product_id')->reference('id')->on('products');
+            $table->foreign('member_id')->reference('id')->on('members');
+            $table->foreign('supplier_id')->reference('id')->on('suppliers');
         });
     }
 

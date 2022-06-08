@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
+use App\Models\Supplier;
 use Illuminate\Http\Request;
 
-class CategoryController extends Controller
+class SupplierController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,18 +14,17 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return view('admin.category.index');
+        return view('admin.supplier.index');
     }
-    
+
     public function api()
     {
-        $categories = Category::all();
-        $datatables = datatables()->of($categories)
+        $suppliers = Supplier::all();
+        $datatables = datatables()->of($suppliers)
                                 ->addIndexColumn();
 
         return $datatables->make(true);
     }
-    
     /**
      * Show the form for creating a new resource.
      *
@@ -45,21 +44,24 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $this->validate($request,[
-            'name' => ['required']
+            'name' => ['required'],
+            'email' => ['required'],
+            'telp' => ['required', 'min:8', 'max:15'],
+            'address' => ['required']
         ]);
 
-        Category::create($request->all());
+        Supplier::create($request->all());
 
-        return redirect('categories');
+        return redirect('suppliers');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Category  $category
+     * @param  \App\Models\Supplier  $supplier
      * @return \Illuminate\Http\Response
      */
-    public function show(Category $category)
+    public function show(Supplier $supplier)
     {
         //
     }
@@ -67,10 +69,10 @@ class CategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Category  $category
+     * @param  \App\Models\Supplier  $supplier
      * @return \Illuminate\Http\Response
      */
-    public function edit(Category $category)
+    public function edit(Supplier $supplier)
     {
         //
     }
@@ -79,28 +81,31 @@ class CategoryController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Category  $category
+     * @param  \App\Models\Supplier  $supplier
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Category $category)
+    public function update(Request $request, Supplier $supplier)
     {
         $this->validate($request,[
-            'name' => ['required']
+            'name' => ['required'],
+            'email' => ['required'],
+            'telp' => ['required', 'min:8', 'max:15'],
+            'address' => ['required']
         ]);
 
-        $category->update($request->all());
+        $supplier->update($request->all());
 
-        return redirect('categories');
+        return redirect('suppliers');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Category  $category
+     * @param  \App\Models\Supplier  $supplier
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Category $category)
+    public function destroy(Supplier $supplier)
     {
-        $category->delete();
+        $supplier->delete();
     }
 }

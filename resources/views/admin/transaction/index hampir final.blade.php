@@ -11,54 +11,53 @@
 
 @section('content')
 <div id="controller">
-  <div class="container">
-    <div class="card">        
-      <!-- /.card-header -->
-      <div class="card card-default">
-        <div class="card-header">Transaction</div>
-        <div class="card-body">
-          <div class="card-body p-0 mt-2 mb-2 mr-3">
-            <table class="table table-bordered mr-2 ml-2" id="tabel1">
-              <thead>
-                <tr>
-                  <th style="width: 10px">No</th>
-                  <th>Product Name</th>
-                  <th>Merk</th>
-                  <th>Quantity</th>
-                  <th>Total(price)</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
+    <div class="container">
+      <div class="card">        
+        <!-- /.card-header -->
+        <div class="card card-default">
+          <div class="card-header">Transaction</div>
+          <div class="card-body">
+            <div class="card-body p-0 mt-2 mb-2 mr-3">
+              <table class="table table-bordered mr-2 ml-2" id="tabel1">
+                <thead>
                   <tr>
-                    <td>1</td>
-                    <td>
-                      <select id="product" name="product_id" class="form-control product" style="width: 100%;">
-                        @foreach ($products as $product)
-                        <option data-merk="{{ $product->merk }}" data-price="{{ $product->sell_price }}" value="{{ $product->id }}">{{ $product->name }}</option>    
-                        @endforeach
-                      </select>
-                    </td>
-                    {{-- <td contenteditable="true" class="product" required></td> --}}
-                    <td class="merk"> <input type="text" id="merk" name="merk" readonly></td>
-                    <td contenteditable="true" class="qty" required></td>
-                    <td class="price"> <input type="text" id="price" name="price" readonly></td>
-                    {{-- <td contenteditable="false" class="total"><span id="total"></span></td> --}}
-                    <td><button class="btn-sm btn-success" id="tambah">+</button></td>
+                    <th style="width: 10px">No</th>
+                    <th>Product Name</th>
+                    <th>Merk</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                    <th>Action</th>
                   </tr>
-              </tbody>              
-            </table>
-            <br>
-            <button class="btn btn-success" id="tambah">+</button>
-            <button class="btn btn-primary" id="simpan">submit</button>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td>1</td>
+                      <td>
+                        <select id="product" name="product_id" class="form-control product" style="width: 100%;">
+                          @foreach ($products as $product)
+                          <option data-merk="{{ $product->merk }}" value="{{ $product->id }}">{{ $product->name }}</option>    
+                          @endforeach
+                      </td>
+                      {{-- <td contenteditable="true" class="product" required></td> --}}
+                      <td class="merk" ><input type="text" id="merk" readonly></td>
+                      <td contenteditable="true" class="qty" required></td>
+                      <td contenteditable="false" class="total"></td>
+                      <td><button class="btn-sm btn-success" id="tambah">+</button></td>
+                    </tr>
+                </tbody>              
+              </table>
+              <br>
+              <button class="btn btn-success" id="tambah">+</button>
+              <button class="btn btn-primary" id="simpan">submit</button>
+            </div>
+            <!-- /.card-body -->
           </div>
-          <!-- /.card-body -->
-        </div>          
+          </div>
+        </div>
+        <!-- /.card-body -->
       </div>
-      <!-- /.card-body -->
     </div>
   </div>
-</div>
 @endsection
 
 @section('js')
@@ -79,15 +78,45 @@
   
   
   <script type="text/javascript">
-    
+    // var actionUrl = '{{ url('transactions') }}';
+    // var apiUrl = '{{ url('api/transactions') }}';
+  
+    // var columns = [
+    //   {data: 'DT_RowIndex', class: 'text-center', orderable: true},
+    //   {data: 'a', class: 'text-center', orderable: true},
+    //   {data: 'merk', class: 'text-center', orderable: false},
+    //   {data: 'quantity', class: 'text-center', orderable: false},
+    //   {data: 'total', class: 'text-center', orderable: false},
+    //   {render: function (index, row, data, meta) {
+    //     return `
+    //       <a href="#" class="btn btn-warning btn-sm" onclick="controller.editData(event, ${meta.row})">
+    //         Edit
+    //       </a>
+    //       <a class="btn btn-danger btn-sm" onclick="controller.deleteData(event, ${data.id})">
+    //         Delete
+    //       </a>`;
+    //   }, orderable: false, width:'200px', class:'text-center'},
+    // ];
+
+
+    // $( function () {
+    //   //Initialize Select2 Elements
+    //   $('.select2').select2()
+
+    //   //Initialize Select2 Elements
+    //   $('.select2bs4').select2({
+    //     theme: 'bootstrap4'
+    //   })
+    // })
+
     $(document).ready(function() {
       let baris = 1
       $(document).on('click', '#tambah', function (){
         baris = baris + 1
         let html = "<tr id='baris"+baris+"'>"
             html+= "<td>"+baris+"</td>"            
-            html+= "<td><select id='product2' name='product_id' class='form-control' style='width: 100%;'> @foreach ($products as $product) <option  data-merk='{{ $product->merk }}' value='{{ $product->id }}'>{{ $product->name }}</option> @endforeach </select></td>"
-            html+= "<td class='merk' ><input type='text' id='merk' name='merk2' readonly></td>"
+            html+= "<td><select id='product' name='product_id' class='form-control' style='width: 100%;'> @foreach ($products as $product) <option  data-merk='{{ $product->merk }}' value='{{ $product->id }}'>{{ $product->name }}</option> @endforeach</td>"
+            html+= "<td class='merk' ><input type='text' id='merk' readonly></td>"
             html+= "<td contenteditable='true' class='qty'></td>"
             html+= "<td contenteditable='false' class='total'></td>"
             html+= "<td> <button class='btn-sm btn-danger' data-row='baris"+baris+"' id='hapus'> - </button></td>"
@@ -101,7 +130,6 @@
       $('#' + hapus).remove()
     })
 
-    
     $(document).on('click', '#simpan', function(){
       let product_id = []
       let qty = []
@@ -138,23 +166,8 @@
   // ambil data dari elemen option yang dipilih
   const merk = $('#product option:selected').data('merk');  
   // tampilkan data ke element
-  $('[name=merk]').val(merk); 
+  $('#merk').val(merk); 
   });
-
-  $('#product').on('change', function(){
-  // ambil data dari elemen option yang dipilih
-  const merk2 = $('#product option:selected').data('price');  
-  // tampilkan data ke element
-  $('[name=price]').val(merk2); 
-  });
-
-  // const jumlah = $('qty').text();
-  // const harga = $('#product option:selected').data('sell_price');
-  // const total = (harga*jumlah);
-
-  // $('#total').text(`Rp ${total}`);
-
-
 
   $('#product1').on('change', function(){
   // ambil data dari elemen option yang dipilih
@@ -169,9 +182,13 @@
   // tampilkan data ke element
   $('[name=merk2]').val(merk); 
   });
-      
-  </script>
 
+  
+
+    
+  </script>
+  
+  {{-- <script src="{{asset('js/data.js')}}"></script> --}}
   <script src="{{asset('assets/plugins/select2/js/select2.full.min.js')}}"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
 @endsection
