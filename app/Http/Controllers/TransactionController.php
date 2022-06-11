@@ -19,7 +19,7 @@ class TransactionController extends Controller
     {
         $transactionDetails = TransactionDetail::all();
         $members = Member::all();
-        $products = Product::all();
+        $products = Product::all()->where('stock', '>', '0');
 
         return view('admin.transaction.index', compact("transactionDetails", "members", "products"));
     }
@@ -32,11 +32,11 @@ class TransactionController extends Controller
         
         $transactions = Transaction::with("transactionDetails", "member");
         $datatables = datatables()->of($transactions)
-                                // ->addColumn('name', function($transaction){
+                                // ->addColumn('product', function($transaction){
                                 //     foreach ($transaction->transactionDetails() as $key => $value) {
-                                //         $prod = 
+                                //         $prod = $value->products()->name;
+                                //         return $prod;
                                 //     }
-                                //     return $transaction->transactionDetails('products');
                                 // })
                                 // ->addColumn('merk', function($transaction){
                                 //     return $transaction->transactionDetails->products->merk;
@@ -44,13 +44,6 @@ class TransactionController extends Controller
                                 // ->addColumn('quantity', function($transaction){
                                 //     return $transaction->transactionDetails->quantity;
                                 // })
-                                ->addColumn('a', function($transaction){
-                                    $isi = [];
-                                    foreach ($transaction->transactionDetails as $key => $value) {
-                                        $isi[]= $value->products->name;
-                                    }
-                                    return $isi;
-                                })
                                 ->addIndexColumn();
 
         return $datatables->make(true);
@@ -101,13 +94,23 @@ class TransactionController extends Controller
 
         // }
         
+        $transactionDetails = new TransactionDetail;
+        $products = new Product;
         $transactions = Transaction::create($request->toArray());
         foreach ($request->product_id as $key => $product_id) {
             $transactions->transactionDetails()->create([
                 "product_id" => intval($product_id),
                 "quantity" => intval($request->qty[$key]),
                 "sub_total" => "100000"
+                // foreach ($request->qty as $key => $q) {
+                    
+                // }
             ]);
+        }
+        
+        //Stok Berkurang
+        foreach ($request->product_id as $key => $product_id) {
+            $products->where('id', $product_id)->decrement('stock', ($request->qty[$key]));
         }
         
         // $bukus = new Book;
@@ -126,7 +129,23 @@ class TransactionController extends Controller
      */
     public function show(Transaction $transaction)
     {
-        //
+        $transaction_details = TransactionDetail::all();
+        $transactions = Transaction::all();
+
+        function subtotal($tran){
+            $sub_total=[];
+            foreach ($tran->transactionDetails as $key => $value) {
+                $sub_total []= $value->sub_total;                                        
+            }
+            $total = array_sum($sub_total);
+            return "Rp".number_format($total,'0', ',', '.');
+        }
+
+        $subtotal = subtotal($transaction);
+        
+        $cashier = $transaction->member->name;
+        $date = $transaction->created_at;
+        return view('admin.detail.detail', compact('transaction', 'subtotal', 'transactions', 'cashier', 'date'));
     }
 
     /**

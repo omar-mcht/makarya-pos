@@ -30,3 +30,4 @@ Route::get('/api/suppliers', [App\Http\Controllers\SupplierController::class, 'a
 Route::get('/api/categories', [App\Http\Controllers\CategoryController::class, 'api']);
 Route::get('/api/products', [App\Http\Controllers\ProductController::class, 'api']);
 Route::get('/api/transactions', [App\Http\Controllers\TransactionController::class, 'api']);
+Route::get('/api/details', [App\Http\Controllers\TransactionDetailController::class, 'api']);

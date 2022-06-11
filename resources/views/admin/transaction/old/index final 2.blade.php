@@ -18,20 +18,16 @@
         <div class="card-header">Transaction</div>
         <div class="card-body">
           <div class="card-body p-0 mt-2 mb-2 mr-3">
-            
             <form action="{{ url('transactions') }}" method="post">
               @csrf
               <table class="table table-bordered mr-2 ml-2" id="tabel1">
-                <div class="row">
-                  <div class="ml-auto mb-2">
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                  </div>
-                </div>
                 <thead>
                   <tr>
                     <th style="width: 10px">No</th>
                     <th>Product Name</th>
+                    <th>Merk</th>
                     <th>Quantity</th>
+                    <th>Total(price)</th>
                     <th>Action</th>
                   </tr>
                 </thead>
@@ -47,26 +43,19 @@
                           </select>
                         </div>
                       </td>
-                      <td><input type="text" id="qty" name="qty[]"><input type="hidden" name="member_id" value="1"></td>                   
+                      {{-- <td contenteditable="true" class="product" required></td> --}}
+                      <td class="merk"> <input type="text" id="merk" name="merk" readonly></td>
+                      <td><input type="text" name="qty[]"><input type="hidden" name="member_id" value="1"></td>
+                      <td class="price"> <input type="text" id="price" name="price" readonly></td>
+                      {{-- <td contenteditable="false" class="total"><span id="total"></span></td> --}}
+                      
                     </tr>
-                </tbody> 
-                <tfoot>
-                <tr>
-                  <td colspan="6" align="right">
-                   
-                    
-                  </td>
-                </tr>
-                </tfoot>             
-              </table>              
+                </tbody>              
+              </table>
+              <button type="submit" class="btn btn-primary">Submit</button>
             </form>            
             <br>
-            <div class="row">
-              <div class="ml-auto">
-                <button class="btn btn-success" id="tambah">Add Transaction</button>
-              </div>
-              
-            </div>
+            <button class="btn btn-success" id="tambah">+</button>
           </div>
           <!-- /.card-body -->
         </div>          
@@ -102,19 +91,53 @@
         baris = baris + 1
         var html = "<tr id='baris"+baris+"'>"
             html+= "<td>"+baris+"</td>"            
-            html+= "<td><select id='product' name='product_id[]' class='form-control' style='width: 100%;'> @foreach ($products as $product) <option data-price='{{ $product->sell_price }}' data-merk='{{ $product->merk }}' value='{{ $product->id }}'>{{ $product->name }}</option> @endforeach </select></td>"
-            html+= "<td><input type='text' name='qty[]'></td>"
+            html+= "<td><select id='product"+baris+"' data-iproduct='#product"+baris+"' name='product_id[]' class='form-control' style='width: 100%;'> @foreach ($products as $product) <option data-price2='{{ $product->sell_price }}' data-merk2='{{ $product->merk }}' value='{{ $product->id }}'>{{ $product->name }}</option> @endforeach </select></td>"
+            html+= "<td class='merk' ><input type='text' id='merk1' data-imerk='[name=merk"+baris+"]' name='merk"+baris+"' readonly></td>"
+            html+= "<td contenteditable='true' class='qty'><input type='text' name='qty[]'></td>"
+            html+= "<td class='price'> <input type='text' id='price' name='price"+baris+"' readonly></td>"
             html+= "<td> <button class='btn-sm btn-danger' data-row='baris"+baris+"' id='hapus'> - </button></td>"
             html+= "</tr>"
             
             $('#tabel1').append(html)                      
       })
-      
-  })
+    })
     $(document).on('click', '#hapus', function (){
       let hapus = $(this).data('row')
       $('#' + hapus).remove()
     })
+
+    
+    // $(document).on('click', '#simpan', function(){
+    //   let product_id = []
+    //   let qty = []
+    //   let member_id = "1"
+      
+
+    //   $('#product').each(function(){
+    //     product_id.push($(this).val())
+    //   })
+    //   $('.qty').each(function(){
+    //     qty.push($(this).text())
+    //   })
+
+    //   $.ajax({
+    //     url : "{{ url('transactions') }}",
+    //     type : 'post',
+    //     data :{
+    //       product_id : product_id,
+    //       qty : qty,
+    //       member_id : member_id,
+    //       "_token" : "{{ csrf_token() }}"
+    //     },success: function (res) {
+    //       console.log(res);
+    //     },error: function(xhr) {
+    //       console.error(xhr);
+    //     }
+    //   })
+    // })
+    
+
+
 
     $('#product').on('change', function(){
   // ambil data dari elemen option yang dipilih
@@ -123,12 +146,60 @@
   $('[name=merk]').val(merk); 
   });
 
- 
-  const jumlah = $('#qty').val();
-  const harga = $('#product option:selected').data('price');
-  const total = (harga*jumlah);
+  $('#product').on('change', function(){
+  // ambil data dari elemen option yang dipilih
+  const merk2 = $('#product option:selected').data('price');  
+  // tampilkan data ke element
+  $('[name=price]').val(merk2); 
+  });
 
-  $('#total').text(`Rp ${total}`);
+
+  const iproduct = function(){$(this).find(':selected').data('iproduct');}
+  const imerk = $(this).find(':selected').data('imerk');
+  // $(document).on('change', iproduct, function(){
+  // // ambil data dari elemen option yang dipilih
+  // const merk = $(this).find(':selected').data('merk');  
+  // // tampilkan data ke element
+  // $(imerk).val(merk); 
+  // });
+
+  $(document).on('change', iproduct, function(){
+  // ambil data dari elemen option yang dipilih
+  const merk1 = $(this).find(':selected').data('merk2');  
+  // tampilkan data ke element
+  $('[name=merk2]').val(merk1); 
+  });
+
+  $(document).on('change', iproduct, function(){
+  // ambil data dari elemen option yang dipilih
+  const merk1 = $(this).find(':selected').data('price2');  
+  // tampilkan data ke element
+  $('[name=price2]').val(merk1); 
+  });
+
+
+
+  // const jumlah = $('qty').text();
+  // const harga = $('#product option:selected').data('sell_price');
+  // const total = (harga*jumlah);
+
+  // $('#total').text(`Rp ${total}`);
+
+
+
+  $('#product1').on('change', function(){
+  // ambil data dari elemen option yang dipilih
+  const merk = $('#product1 option:selected').data('merk');  
+  // tampilkan data ke element
+  $('#merk').val(merk); 
+  });
+
+  $('#product2').on('change', function(){
+  // ambil data dari elemen option yang dipilih
+  const merk = $('#product2 option:selected').data('merk2');  
+  // tampilkan data ke element
+  $('[name=merk2]').val(merk); 
+  });
       
   </script>
   <script src="{{asset('js/data.js')}}"></script>

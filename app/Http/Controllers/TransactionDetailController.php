@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\TransactionDetail;
+use App\Models\Transaction;
+use App\Models\Member;
 use Illuminate\Http\Request;
 
 class TransactionDetailController extends Controller
@@ -14,7 +16,30 @@ class TransactionDetailController extends Controller
      */
     public function index()
     {
+
         return view('admin.detail.index');
+    }
+
+    
+    
+    public function api()
+    {
+        $transactions = Transaction::with("transactionDetails", "member");
+        $datatables = datatables()->of($transactions)
+                                ->addColumn('date', function($transaction){
+                                    return $transaction->created_at;
+                                })
+                                ->addColumn('total', function($transaction){
+                                    $sub_total=[];
+                                    foreach ($transaction->transactionDetails as $key => $value) {
+                                        $sub_total []= $value->sub_total;                                        
+                                    }
+                                    $total = array_sum($sub_total);
+                                    return "Rp".number_format($total,'0', ',', '.');
+                                })
+                                ->addIndexColumn();
+
+        return $datatables->make(true);
     }
 
     /**
@@ -46,7 +71,7 @@ class TransactionDetailController extends Controller
      */
     public function show(TransactionDetail $transactionDetail)
     {
-        //
+        
     }
 
     /**
