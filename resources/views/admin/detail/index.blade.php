@@ -85,7 +85,7 @@
     {data: 'DT_RowIndex', class: 'text-center', orderable: true},
     {data: 'id', class: 'text-center', orderable: true},
     {data: 'total', class: 'text-center', orderable: true},
-    {data: 'created_at', class: 'text-center', orderable: true},
+    {data: 'date', class: 'text-center', orderable: true},
     {render: function (index, row, data, meta) {
       return `
             <a href="{{ url('transactions/'.'${data.id}') }}" class="btn btn-info btn-sm" value="show">

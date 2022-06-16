@@ -27,7 +27,7 @@ class TransactionDetailController extends Controller
         $transactions = Transaction::with("transactionDetails", "member");
         $datatables = datatables()->of($transactions)
                                 ->addColumn('date', function($transaction){
-                                    return $transaction->created_at;
+                                    return date('d M Y (H:i:s)', strtotime($transaction->created_at));
                                 })
                                 ->addColumn('total', function($transaction){
                                     $sub_total=[];

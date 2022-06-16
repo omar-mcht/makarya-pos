@@ -73,52 +73,34 @@ class TransactionController extends Controller
         //     'member_id' => ['required'],
         //     'date_start' => ['required'],
         // ]);
-
-
-
-        // $product_id = $request->product_id;
-        // $qty = $request->qty;
-
-        // for ($i=0; $i < count($product_id); $i++) { 
-        //     $transaction = new Transaction();
-        //     $transactionDetails = $transaction->transactionDetails();
-            
-        //     // $transaction->member_id = "1";
-
-        //     $transactionDetails->product_id = $product_id[$i];
-        //     $transactionDetails->quantity = $qty[$i];
-        //     $transactionDetails->sub_total = "100000";
-
-           
-        //     $transactionDetails->save();
-
-        // }
         
         $transactionDetails = new TransactionDetail;
         $products = new Product;
         $transactions = Transaction::create($request->toArray());
         foreach ($request->product_id as $key => $product_id) {
-            $transactions->transactionDetails()->create([
-                "product_id" => intval($product_id),
-                "quantity" => intval($request->qty[$key]),
-                "sub_total" => "100000"
-                // foreach ($request->qty as $key => $q) {
-                    
-                // }
-            ]);
+            $harga = ($products->where("id", $product_id)->sum('sell_price'));
+            $jumlah = intval($request->qty[$key]);
+            
+
+            $sub_total = ($harga * $jumlah);
+            
+            if ($request->qty[$key] < $products->where("id", $product_id)->sum('stock')) {
+                $transactions->transactionDetails()->create([
+                    "product_id" => intval($product_id),
+                    "quantity" => intval($request->qty[$key]),
+                    "sub_total" => $sub_total     
+                ]);
+            } 
         }
         
+        $transaksi_terakhir = $transactions->id;
         //Stok Berkurang
         foreach ($request->product_id as $key => $product_id) {
             $products->where('id', $product_id)->decrement('stock', ($request->qty[$key]));
         }
-        
-        // $bukus = new Book;
-        // foreach ($request->book_id as $key => $book_id) {
-        //     $bukus->where('id', $book_id)->decrement('qty');
-        // }
+        $arah = "transactions/{$transaksi_terakhir}";
 
-        return redirect('transactions');
+        return redirect($arah);
     }
 
     /**
@@ -144,7 +126,7 @@ class TransactionController extends Controller
         $subtotal = subtotal($transaction);
         
         $cashier = $transaction->member->name;
-        $date = $transaction->created_at;
+        $date = date('d M Y (H:i:s)', strtotime($transaction->created_at));
         return view('admin.detail.detail', compact('transaction', 'subtotal', 'transactions', 'cashier', 'date'));
     }
 
