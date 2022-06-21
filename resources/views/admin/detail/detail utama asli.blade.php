@@ -57,17 +57,17 @@
                                     <tr>
                                         <td>
                                             @foreach ($transaction->transactionDetails as $detail)
-                                            <p>{{ $detail->products->name }}</p>                                               
+                                            <li>{{ $detail->products->name }}</li>                          
                                             @endforeach
                                         </td>
                                         <td>
                                             @foreach ($transaction->transactionDetails as $detail)
-                                            <p>{{ $detail->quantity }}</p>        
+                                            <li>{{ $detail->quantity }}</li>                          
                                             @endforeach
                                         </td>
                                         <td>
                                             @foreach ($transaction->transactionDetails as $detail)
-                                            <p>Rp {{number_format( $detail->sub_total ,'0', ',', '.')}}</p>
+                                            <li>Rp {{number_format( $detail->sub_total ,'0', ',', '.')}}</li>                          
                                             @endforeach
                                         </td>
                                     </tr>
@@ -78,29 +78,7 @@
                                             Total
                                         </th>                                        
                                         <td>
-                                            <input type="text" id="total" value="{{ $total }}" hidden>
-                                           {{ $subtotal }}                                           
-                                        </td>
-                                    </tr>
-                                    <tr>                                        
-                                        <th colspan="2">
-                                            Cash
-                                        </th>                                        
-                                        <td>
-                                            <input type="text" id="cash" name="cash">
-                                        </td>
-                                        
-                                        <td>
-                                            <button onclick="change()" class="btn btn-success">Ok</button>
-                                        </td>
-                                    </tr>
-                                    <tr>                                        
-                                        <th colspan="2">
-                                            Change
-                                        </th>                                        
-                                        <td>
-                                            <span id="change">0</span>
-                                            {{-- <input type="text" id="change" name="change" readonly> --}}
+                                           {{ $subtotal }}
                                         </td>
                                     </tr>
                                 </tfoot>                                
@@ -145,38 +123,6 @@
     // {data: 'quantity', class: 'text-center', orderable: true},
     // {data: 'sub_total', class: 'text-center', orderable: true},
   ];
-
-
-  function change(){
-    // const vCash = $('#cash').val();
-    // const vSubtotal = $('#total').val();
-
-    $(document).on('click', function(){
-        const vCash = $('#cash').val();
-        const vSubtotal = $('#total').val();
-        const vChange = vCash - vSubtotal;
-        const vChange2 = vSubtotal - vCash;
-        if (vCash > vSubtotal) {
-            $('#change').text(`Rp ${vChange}`)
-        } else {
-            $('#change').text(`Kurang Rp ${vChange2}`)
-        }
-
-        })
-    }
-
-
-//   function change(){
-//   $(document).on('click', function(){
-//     const vCash = $('#cash').val();
-//     const vSubtotal = $('#total').val();
-
-//     const vChange = vCash - vSubtotal;
-
-//     $('#change').text(`Rp ${vChange}`);
-//   })}
-
-
 
 </script>
 <script src="{{asset('js/data.js')}}"></script>

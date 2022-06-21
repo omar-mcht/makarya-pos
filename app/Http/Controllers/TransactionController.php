@@ -123,11 +123,21 @@ class TransactionController extends Controller
             return "Rp".number_format($total,'0', ',', '.');
         }
 
+        function total($tran){
+            $sub_total=[];
+            foreach ($tran->transactionDetails as $key => $value) {
+                $sub_total []= $value->sub_total;                                        
+            }
+            $total = array_sum($sub_total);
+            return $total;
+        }
+
         $subtotal = subtotal($transaction);
+        $total = total($transaction);
         
         $cashier = $transaction->member->name;
         $date = date('d M Y (H:i:s)', strtotime($transaction->created_at));
-        return view('admin.detail.detail', compact('transaction', 'subtotal', 'transactions', 'cashier', 'date'));
+        return view('admin.detail.detail', compact('transaction', 'subtotal', 'transactions', 'cashier', 'date', 'total'));
     }
 
     /**
